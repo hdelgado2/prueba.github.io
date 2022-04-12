@@ -1,13 +1,17 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Listados from './component/Listados_Clientes_viajeros/Listados';
+import { BrowserRouter } from "react-router-dom";
 import Menu from './component/navbar/menu';
+
 class App extends React.Component {
 
 	render(){
 		return (
+			<React.StrictMode>
+			<BrowserRouter>
 			<Menu/>
-			//<Listados/>
+			</BrowserRouter>
+			</React.StrictMode>
 			);
 	}
 }
