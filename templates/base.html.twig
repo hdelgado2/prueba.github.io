@@ -5,7 +5,7 @@
         <title>{% block title %}Welcome!{% endblock %}</title>
         <link rel="stylesheet" href="/css/adminlte.min.css">
         <link rel="stylesheet" href="/fontawesome-free/css/all.min.css">
-
+        <link rel="stylesheet" href="/toastr/toastr.min.css">
 
     </head>
     <body class="hold-transition layout-top-nav">
@@ -15,6 +15,26 @@
         
         <script src="/jquery/jquery.min.js"></script>
         <script src="/js/adminlte.js"></script>
+        <script src="/sweetalert2/sweetalert2.min.js"></script>
+        <script src="/toastr/toastr.min.js"></script>
+    <style>
+      .cargando {
+      width: 100%;height: 100%;
+      overflow: hidden; 
+      top: 0px;
+      left: 0px;
+      z-index: 10000;
+      text-align: center;
+      position:absolute; 
+      background-color: /*#FFFFFF*/ #FFF;
+      opacity:0.9;
+      filter:alpha(opacity=40);
+      
+   }
+   .image{
+    margin-top: 500px
+   }
+  </style>
     </body>
 
     {% block stylesheets %}

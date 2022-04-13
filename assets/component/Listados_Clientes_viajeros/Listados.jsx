@@ -1,9 +1,63 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
+
 
 const Listados = () => {
-    const [state, setstate] = useState(0);
+    const [Listado, setListado] = useState([]);
+    const [Filtro, setFiltro] = useState("")
+    const [Loading, setLoading] = useState(false);
+    useEffect(() => {
+        let listasViajes =[]
+        const fetchData = async() =>{
+           setLoading(true)
+            let Lista = await fetch('/Listado')
+           let listasViajes = Lista.json();
+           listasViajes.then((result) => {
+                setListado(result.data);
+           })
+           
+        }
+
+        setInterval(()=>{
+            setLoading(false)
+            listasViajes.then((result) => setListado(result.data))
+            
+        },3000)
+        fetchData();
+    }, [])
+
+    
+       const fetchFiltro = async () =>{
+            
+            await setLoading(true)
+
+            let search = await fetch('/Filtro/'+Filtro)
+            let data = search.json();
+
+            
+            setInterval(()=>{
+                setLoading(false)
+                data.then((result) => setListado(result.data))
+                
+            },3000)
+            
+       }
+
+       
+    
+
+    const LoadingImg = () => {
+        return(
+          <>
+          <div className="cargando" >
+            <img className="image" width={50} height={50} src="./gif/Gear-0.2s-800px.gif" />
+          </div>
+          </>
+        )
+      }
+
     return (
         <>
+        {Loading && <LoadingImg/>}
         <div className="row">
         <div className="col-12">
             <div className="card">
@@ -11,60 +65,54 @@ const Listados = () => {
                 <h3 className="card-title">Lista de Viajes</h3>
                 <div className="card-tools">
                 <div className="input-group input-group-sm" style={{width: 150}}>
-                    <input type="text" name="table_search" className="form-control float-right" placeholder="Search" />
+                    <input type="text" onChange={e=>setFiltro(e.target.value)}  name="table_search" className="form-control float-right" placeholder="Search" />
                     <div className="input-group-append">
-                    <button type="submit" className="btn btn-default"><i className="fas fa-search" /></button>
+                    <button type="submit" className="btn btn-default"  onClick={e => fetchFiltro()} ><i className="fas fa-search" /></button>
                     </div>
                 </div>
                 </div>
             </div>
-            {/* /.card-header */}
+            
             <div className="card-body table-responsive p-0">
                 <table className="table table-hover">
-                <thead>
+                <thead >
                     <tr>
                     <th>ID</th>
-                    <th>User</th>
-                    <th>Date</th>
-                    <th>Status</th>
-                    <th>Reason</th>
+                    <th>Cliente</th>
+                    <th>cedula</th>
+                    <th>Telefono</th> 
+                    <th>Accion</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                    <td>183</td>
-                    <td>John Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span className="tag tag-success">Approved</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                    <td>219</td>
-                    <td>Alexander Pierce</td>
-                    <td>11-7-2014</td>
-                    <td><span className="tag tag-warning">Pending</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                    <td>657</td>
-                    <td>Bob Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span className="tag tag-primary">Approved</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
-                    <tr>
-                    <td>175</td>
-                    <td>Mike Doe</td>
-                    <td>11-7-2014</td>
-                    <td><span className="tag tag-danger">Denied</span></td>
-                    <td>Bacon ipsum dolor sit amet salami venison chicken flank fatback doner.</td>
-                    </tr>
+                    {Listado && 
+                     Listado.map(elem => (
+                        <tr >
+                        <td>{elem.id}</td>
+                        <td>{elem.name}</td>
+                        <td>{elem.ced}</td>
+                        <td>{elem.telf}</td>
+                        <td>
+                            <a to='' className="btn btn-primary"><i className='fa fa-edit'></i></a>
+                            <a to='' className="btn btn-danger"><i className='fa fa-trash'></i></a>
+                        </td>
+                        </tr>
+                     ))
+                    }
+                    
+                    
                 </tbody>
                 </table>
+                
             </div>
             {/* /.card-body */}
             </div>
             {/* /.card */}
+        </div>
+
+        <div className="form-group row">
+                    <label>Paginacion</label>
+                    <input className="col-md-4 form-control"></input>
         </div>
         </div>  
         </>
