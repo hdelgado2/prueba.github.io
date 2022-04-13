@@ -111,10 +111,7 @@ const Listados = () => {
             {/* /.card */}
         </div>
 
-        <div className="form-group row">
-                    <label>Paginacion</label>
-                    <input className="col-md-4 form-control"></input>
-        </div>
+       
         </div>  
         </>
     )
