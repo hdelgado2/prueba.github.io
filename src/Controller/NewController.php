@@ -16,6 +16,15 @@ class NewController extends AbstractController
     {	
         return $this->render('new/index.html.twig');
     }
+
+    /**
+     * 
+     * @Route("/{reactRouting}/{params}", name="inicio2", defaults={"reactRouting": null},defaults={"params": null})
+     */
+    public function inicio2(): Response
+    {	
+        return $this->render('new/index.html.twig');
+    }
 	/**
      * @Route("/registrosClientes", name="Registros")
      */
