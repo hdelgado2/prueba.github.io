@@ -6,22 +6,14 @@ const Listados = () => {
     const [Filtro, setFiltro] = useState("")
     const [Loading, setLoading] = useState(false);
     useEffect(() => {
-        let listasViajes =[]
         const fetchData = async() =>{
-           setLoading(true)
-            let Lista = await fetch('/Listado')
+           let Lista = await fetch('/Listado')
            let listasViajes = Lista.json();
            listasViajes.then((result) => {
                 setListado(result.data);
            })
            
         }
-
-        setInterval(()=>{
-            setLoading(false)
-            listasViajes.then((result) => setListado(result.data))
-            
-        },3000)
         fetchData();
     }, [])
 
@@ -30,19 +22,21 @@ const Listados = () => {
             
             await setLoading(true)
 
-            let search = await fetch('/Filtro/'+Filtro)
+            let search = await fetch('/Filtro/'+JSON.stringify(Filtro))
             let data = search.json();
-
+            data.then((result) => setListado(result.data))
             
             setInterval(()=>{
-                setLoading(false)
-                data.then((result) => setListado(result.data))
-                
+                if(Listado.length > 0)
+                    setLoading(false)                
             },3000)
             
        }
 
-       
+       const deleteViajes = async (id) =>{
+            await fetch('/deletePasajero/'+id);
+       }
+    
     
 
     const LoadingImg = () => {
@@ -67,7 +61,7 @@ const Listados = () => {
                 <div className="input-group input-group-sm" style={{width: 150}}>
                     <input type="text" onChange={e=>setFiltro(e.target.value)}  name="table_search" className="form-control float-right" placeholder="Search" />
                     <div className="input-group-append">
-                    <button type="submit" className="btn btn-default"  onClick={e => fetchFiltro()} ><i className="fas fa-search" /></button>
+                    <button type="submit" onClick={e => fetchFiltro()} className="btn btn-default"><i className="fas fa-search" /></button>
                     </div>
                 </div>
                 </div>
@@ -86,15 +80,15 @@ const Listados = () => {
                 </thead>
                 <tbody>
                     {Listado && 
-                     Listado.map(elem => (
-                        <tr >
+                     Listado.map((elem,index) => (
+                        <tr key={index}>
                         <td>{elem.id}</td>
                         <td>{elem.name}</td>
                         <td>{elem.ced}</td>
                         <td>{elem.telf}</td>
                         <td>
                             <a to='' className="btn btn-primary"><i className='fa fa-edit'></i></a>
-                            <a to='' className="btn btn-danger"><i className='fa fa-trash'></i></a>
+                            <a onClick={e =>deleteViajes(elem.id)} className="btn btn-danger"><i className='fa fa-trash'></i></a>
                         </td>
                         </tr>
                      ))

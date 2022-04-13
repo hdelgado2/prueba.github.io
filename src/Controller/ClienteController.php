@@ -13,6 +13,24 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 use App\Service\ClienteManager;
 class ClienteController extends AbstractController
 {
+
+    /**
+     * @Route("/deletePasajero/{id}", name="delete",methods={"GET"})
+     * 
+     */
+    public function delete(ManagerRegistry $doctrine,$id)
+    {
+        $entityManager = $doctrine->getManager();
+        $cliente1 = $doctrine->getRepository(Cliente::class);
+        $clientes = $cliente1->find($id);
+        
+        $entityManager->remove($clientes);
+        $entityManager->flush();
+
+        return new Response(json_encode('Se Ha Eliminado un Cliente '.$clientes->getName()));
+        
+    }
+
     /**
      * @Route("/cliente", name="app_cliente",methods={"POST"})
      * 
