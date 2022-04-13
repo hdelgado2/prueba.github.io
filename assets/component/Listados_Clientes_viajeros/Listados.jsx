@@ -34,7 +34,14 @@ const Listados = () => {
        }
 
        const deleteViajes = async (id) =>{
-            await fetch('/deletePasajero/'+id);
+            setLoading(true);                
+           let listadoUpdate = await fetch('/deletePasajero/'+id);
+           let data = listadoUpdate.json();
+           data.then((result) => setListado(result.data))
+           setInterval(()=>{
+            if(Listado.length > 0)
+                setLoading(false)                
+            },3000)
        }
     
     

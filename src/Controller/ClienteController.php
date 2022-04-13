@@ -26,9 +26,26 @@ class ClienteController extends AbstractController
         
         $entityManager->remove($clientes);
         $entityManager->flush();
+        $listado = $cliente1->findAll();
+        $clientesArray = [];
+        foreach ($listado as $cliente) {
+            $clientesArray[] = [
+                'id' => $cliente->getId(),
+                'name' => $cliente->getName(),
+                'ced' => $cliente->getCedula(),
+                'fech' => $cliente->getFechaNacimiento(),
+                'telf' => $cliente->getTelf()
+            ];
+        }
 
-        return new Response(json_encode('Se Ha Eliminado un Cliente '.$clientes->getName()));
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => 200,
+            'data' => $clientesArray,
+            'msg' => 'Se Eliminado con Exito'
+        ]);
         
+        return $response;
     }
 
     /**
