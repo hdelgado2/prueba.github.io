@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import SweetAlert from 'sweetalert2-react';
+import { Link } from "react-router-dom";
 
 
 const Editar = () => {
@@ -97,6 +98,8 @@ const Editar = () => {
                 </div>
                 <div className="card-footer">
                 <button type="submit" className="btn btn-primary">Actualizar</button>
+                <Link to="/" href="#" className="btn btn-default">Atras</Link>
+
                 </div>
             </form>
             </div>  
