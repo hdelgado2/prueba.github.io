@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
 import SweetAlert from 'sweetalert2-react';
+
 const Registro = () => {
   /***
    *  Creamos un Hooks de objeto donde se va almacenar
@@ -87,7 +87,7 @@ const Registro = () => {
       </div>
     </div>
     <div className="card-footer">
-      <button type="submit" className="btn btn-primary">Submit</button>
+      <button type="submit" className="btn btn-primary">Registrar</button>
     </div>
   </form>
 </div>

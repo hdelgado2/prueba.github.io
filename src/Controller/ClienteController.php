@@ -11,6 +11,8 @@ use App\Entity\Cliente;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use App\Service\ClienteManager;
+use Symfony\Component\Validator\Constraints\DateTime;
+
 class ClienteController extends AbstractController
 {
 
@@ -121,4 +123,53 @@ class ClienteController extends AbstractController
         ]);
         return $response;
      }
+     /**
+     * @Route("/pullCliente/{id}", name="editar",methods={"GET"})
+     * 
+     */    
+    public function editar(ManagerRegistry $doctrine,$id)
+    {
+       $cliente1 = $doctrine->getRepository(Cliente::class);
+       $clientes = $cliente1->find($id);
+       
+        $clientesArray = [];
+            $date = new DateTime($clientes->getFechaNacimiento());
+            
+           $clientesArray[] = [
+               'id' => $clientes->getId(),
+               'name' => $clientes->getName(),
+               'ced' => $clientes->getCedula(),
+               'fech' => date_format($date->format,'d/m/Y'),
+               'telf' => $clientes->getTelf()
+           ];
+       $response = new JsonResponse();
+       $response->setData([
+           'data' => $clientesArray
+       ]);
+       return $response;
+    }
+
+    /**
+     * @Route("/updateCliente", name="update",methods={"POST"})
+     * 
+     */    
+    public function update(ManagerRegistry $doctrine,Request $request)
+    {
+       $data = json_decode($request->getContent());
+       $cliente1 = $doctrine->getRepository(Cliente::class);
+       $clientes = $cliente1->find($data->id);
+       $em = $doctrine->getManager();
+       list($day, $month, $year) = explode('/', $data->fechaN);
+       $date = new \DateTime();
+       $date->setDate($year, $month, $day);
+       $clientes->setName($data->nombre);
+       $clientes->setCedula($data->ced);
+       $clientes->setTelf($data->telf);
+       $clientes->setFechaNacimiento($date);
+        $em->persist($clientes);
+        $em->flush();
+        return new Response(json_encode('Se Ha Actualizado El Cliente '.$clientes->getName()));
+        
+    }
+
 }

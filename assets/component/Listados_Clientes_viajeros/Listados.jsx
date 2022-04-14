@@ -1,5 +1,5 @@
 import React,{useState,useEffect} from 'react';
-
+import { Routes, Route, Outlet, Link } from "react-router-dom";
 
 const Listados = () => {
     const [Listado, setListado] = useState([]);
@@ -75,8 +75,8 @@ const Listados = () => {
             </div>
             
             <div className="card-body table-responsive p-0">
-                <table className="table table-hover">
-                <thead >
+                <table  className="table table-hover">
+                <thead align="center">
                     <tr>
                     <th>ID</th>
                     <th>Cliente</th>
@@ -85,7 +85,7 @@ const Listados = () => {
                     <th>Accion</th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody align="center">
                     {Listado && 
                      Listado.map((elem,index) => (
                         <tr key={index}>
@@ -94,7 +94,7 @@ const Listados = () => {
                         <td>{elem.ced}</td>
                         <td>{elem.telf}</td>
                         <td>
-                            <a to='' className="btn btn-primary"><i className='fa fa-edit'></i></a>
+                            <Link to={'/editar/'+elem.id} className="btn btn-primary"><i className='fa fa-edit'></i></Link>
                             <a onClick={e =>deleteViajes(elem.id)} className="btn btn-danger"><i className='fa fa-trash'></i></a>
                         </td>
                         </tr>

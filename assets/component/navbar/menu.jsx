@@ -2,6 +2,7 @@ import React from 'react'
 import Listados from '../Listados_Clientes_viajeros/Listados'
 import { Routes, Route, Outlet, Link } from "react-router-dom";
 import Registro from '../Registro/Registro';
+import Editar from '../Registro/Editar';
 const Menu = () => {
     return (
 <>
@@ -31,6 +32,7 @@ const Menu = () => {
       <Routes>
           <Route path="/" element={<Listados/>}/>
           <Route path="/registro" element={<Registro />} />
+          <Route path="/editar/:id" element={<Editar />} />
       </Routes>
 
       <Outlet />      
