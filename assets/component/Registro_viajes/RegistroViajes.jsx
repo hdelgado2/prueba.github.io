@@ -74,7 +74,7 @@ const RegistroViajes = () => {
     </div>
     <div className="card-footer">
       <button type="submit" className="btn btn-primary">Registrar</button>
-      <Link to="/" href="#" className="btn btn-default">Atras</Link>
+      <Link to="/listaViajes" href="#" className="btn btn-default">Atras</Link>
 
     </div>
   </form>
