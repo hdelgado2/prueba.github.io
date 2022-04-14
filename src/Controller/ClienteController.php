@@ -104,7 +104,7 @@ class ClienteController extends AbstractController
      public function Filtro(ManagerRegistry $doctrine,$name)
      {
         $cliente1 = $doctrine->getRepository(Cliente::class);
-        $clientes = $cliente1->findByName($name);
+        $clientes = $cliente1->findByName(json_decode($name));
         $clientesArray = [];
         foreach ($clientes as $cliente) {
             $clientesArray[] = [

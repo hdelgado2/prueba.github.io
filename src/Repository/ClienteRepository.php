@@ -62,8 +62,8 @@ class ClienteRepository extends ServiceEntityRepository
     public function findByName($name)
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.name ilike :name')
-            ->setParameter('name', $name)
+            ->andWhere('c.name like :name')
+            ->setParameter('name', '%'.strtoupper($name).'%')
             ->orderBy('c.id', 'ASC')
             ->setMaxResults(5)
             ->getQuery()
