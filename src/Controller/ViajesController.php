@@ -160,4 +160,26 @@ class ViajesController extends AbstractController
         ]);
         return $response;
     }
+
+     /**
+     * @Route("/update/{id}", name="update",methods={"POST"})
+     */
+    public function update(ManagerRegistry $doctrine,$id,Request $request):Response
+    {
+        $datos = json_decode($request->getContent());
+        
+        $entityManager = $doctrine->getManager();
+        $viaje = $doctrine->getRepository(Viajes::class);
+        $viajes = $viaje->find($id);
+        $viajes->setDestino($datos->Destino);
+        $viajes->setOrigen($datos->lOrigen);
+        $viajes->setPrecio(floatval($datos->precio));
+        $viajes->setNumPlaza(strval($datos->nPlaza));
+        $viajes->setCodigoViaje($datos->codViajes);
+        $entityManager->persist($viajes);
+        $entityManager->flush();
+        
+        return new Response(json_encode('Se Ha Actualizad El viaje'));
+
+    }
 }

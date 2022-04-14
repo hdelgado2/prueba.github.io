@@ -1,5 +1,6 @@
 import React, { useEffect,useState } from 'react'
 import { useNavigate, useLocation, Link } from 'react-router-dom'
+import SweetAlert from 'sweetalert2-react';
 
 const EditarViajes = () => {
     let {pathname} = useLocation();
@@ -12,6 +13,11 @@ const EditarViajes = () => {
         "lOrigen":"",
         "precio":0
     })
+    const [Sweet, setSweet] = useState(false);
+    const [Resultado, setResultado] = useState("")
+    const navigate = useNavigate()
+
+
     useEffect(() => {
         const fetchData = async()=>{
             let data = await fetch('/api/viaje/edit/'+params);
@@ -32,9 +38,32 @@ const EditarViajes = () => {
         fetchData();
     }, [])
 
+    const handleSubmit = async (e) =>{
+        e.preventDefault();
+        let enviar = await fetch('/api/viaje/update/'+params,{
+            method:'POST',
+            body:JSON.stringify(Viajes)            
+        });
+        let resut = enviar.json();
+          resut.then((result) => {
+              setResultado(result)
+              setSweet(true)
+          })
+    }
 
     return (
         <>
+     <SweetAlert
+      show={Sweet}
+      title="Exito"
+      text={Resultado}
+      icon="success"
+      onConfirm={() => {
+        setSweet(false)
+        navigate('/listaViajes')
+      }}
+      />
+      
         <div className="card card-primary">
         <div className="card-header">
             <h3 className="card-title">Editar Viajes</h3>
@@ -43,7 +72,7 @@ const EditarViajes = () => {
             <div className="card-body">
             <div className="form-group">
                 <label htmlFor="codViajes">Codigo de Viaje</label>
-                <input type="text" value={Viajes.codViajes} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="codViajes" className="form-control" placeholder="ej: vi-001" />
+                <input type="text" readOnly value={Viajes.codViajes} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="codViajes" className="form-control" placeholder="ej: vi-001" />
             </div>
             <div className="form-group">
                 <label htmlFor="nPlaza">Numero de Plaza</label>
