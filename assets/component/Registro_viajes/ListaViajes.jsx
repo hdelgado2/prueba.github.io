@@ -69,7 +69,7 @@ const ListaViajes = () => {
                     {
                         Listado && 
                         Listado.map((elem,index) => (
-                            <tr>
+                            <tr key={index}>
                             <td>{elem.id}</td>
                             <td>{elem.codigo}</td>
                             <td>{elem.origen}</td>

@@ -34,12 +34,15 @@ class ViajesController extends AbstractController
        $viaje->setOrigen($datos->lOrigen);
        $viaje->setPrecio($datos->precio);
        $error = $validator->validate($viaje);
+       
        if(count($error) > 0){
             $errores =[];
             foreach ($error as $key) {
                 
                 $errores[] = [
-                    'errores' => (string)$key
+                    'errores' => (string)$key->getMessage(),
+                    'campo' => $key->getPropertyPath(),
+                    'is_invalid' => true
                 ];
             }
             
@@ -47,7 +50,7 @@ class ViajesController extends AbstractController
        }
        $entityManager->persist($viaje);
        $entityManager->flush();
-       return new Response(json_encode('Se Ha Registrado Un nuevo Cliente '));
+       return new Response(json_encode('Se Ha Registrado Un nuevo Cliente'));
     }
 
     /**

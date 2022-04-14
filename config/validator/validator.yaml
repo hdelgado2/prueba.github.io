@@ -1,0 +1,17 @@
+App\Entity\Viajes:
+    properties:
+          codigo_viaje:
+              - NotBlank: 
+                    message: "Error el campo codigo no puede quedar vacio"
+          num_plaza:
+              - NotBlank: 
+                    message: "Error el campo numero plaza no puede quedar vacio"
+          destino:      
+              - NotBlank: 
+                    message: "Error el campo Destino no puede quedar vacio"
+          origen:
+              - NotBlank: 
+                    message: "Error el campo Lugar Origen no puede quedar vacio"
+          precio:
+              - NotBlank: 
+                    message: "Error el campo codigo no puede quedar vacio"
