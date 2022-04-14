@@ -171,5 +171,29 @@ class ClienteController extends AbstractController
         return new Response(json_encode('Se Ha Actualizado El Cliente '.$clientes->getName()));
         
     }
-
+     /**
+     * @Route("/detalleCliente/{id}", name="detalle",methods={"GET"})
+     * 
+     */    
+    public function detalle(ManagerRegistry $doctrine,$id)
+    {
+       $cliente1 = $doctrine->getRepository(Cliente::class);
+       $clientes = $cliente1->find($id);
+       
+        $clientesArray = [];
+            $date = new DateTime($clientes->getFechaNacimiento());
+            
+           $clientesArray[] = [
+               'id' => $clientes->getId(),
+               'name' => $clientes->getName(),
+               'ced' => $clientes->getCedula(),
+               'fech' => date_format($date->format,'d/m/Y'),
+               'telf' => $clientes->getTelf()
+           ];
+       $response = new JsonResponse();
+       $response->setData([
+           'data' => $clientesArray
+       ]);
+       return $response;
+    }
 }

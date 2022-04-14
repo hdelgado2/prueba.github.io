@@ -96,12 +96,11 @@ const Listados = () => {
                         <td>
                             <Link to={'/editar/'+elem.id} className="btn btn-primary"><i className='fa fa-edit'></i></Link>
                             <a onClick={e =>deleteViajes(elem.id)} className="btn btn-danger"><i className='fa fa-trash'></i></a>
+                            <Link to={'/detalles/'+elem.id} className="btn btn-warning"><i className='fa fa-book'></i></Link>
                         </td>
                         </tr>
                      ))
                     }
-                    
-                    
                 </tbody>
                 </table>
                 

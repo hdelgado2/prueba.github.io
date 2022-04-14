@@ -4,6 +4,7 @@ import { Routes, Route, Outlet, Link } from "react-router-dom";
 import Registro from '../Registro/Registro';
 import Editar from '../Registro/Editar';
 import Error from '../Error';
+import Detalles from '../Registro/Detalles';
 const Menu = () => {
     return (
 <>
@@ -18,12 +19,14 @@ const Menu = () => {
       
         <ul className="navbar-nav">
           <li className="nav-item">
-            <Link href="#" to='/' className="nav-link">Listado de Viajes</Link>
+            <Link href="#" to='/' className="nav-link">Listado de Cliente Viajeros</Link>
           </li>
           <li className="nav-item">
-            <Link href="#" to='/registro' className="nav-link">Registro</Link>
+            <Link href="#" to='/registro' className="nav-link">Registro de Clientes</Link>
           </li>
-        
+          <li className="nav-item">
+            <Link href="#" to='/registro' className="nav-link">Registro de Viajes</Link>
+          </li>
         </ul>
       </div>
     </div>
@@ -34,6 +37,8 @@ const Menu = () => {
           <Route path="/" element={<Listados/>}/>
           <Route path="/registro" element={<Registro />} />
           <Route path="/editar/:id" element={<Editar />} />
+          <Route path="/detalles/:id" element={<Detalles />} />
+
           <Route path="*" element={<Error />} />
       </Routes>
 
