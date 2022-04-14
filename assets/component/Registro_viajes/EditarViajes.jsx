@@ -15,6 +15,8 @@ const EditarViajes = () => {
     })
     const [Sweet, setSweet] = useState(false);
     const [Resultado, setResultado] = useState("")
+    const [Loading, setLoading] = useState(false);
+
     const navigate = useNavigate()
 
 
@@ -40,6 +42,7 @@ const EditarViajes = () => {
 
     const handleSubmit = async (e) =>{
         e.preventDefault();
+        setLoading(true);
         let enviar = await fetch('/api/viaje/update/'+params,{
             method:'POST',
             body:JSON.stringify(Viajes)            
@@ -47,6 +50,7 @@ const EditarViajes = () => {
         let resut = enviar.json();
           resut.then((result) => {
               setResultado(result)
+              if(Resultado.length > 0) setLoading(false);
               setSweet(true)
           })
     }
@@ -60,7 +64,10 @@ const EditarViajes = () => {
       icon="success"
       onConfirm={() => {
         setSweet(false)
-        navigate('/listaViajes')
+        setLoading(false);
+        //Espera 3 segundo y vuelve al listado  
+        window.location.href = '/listaViajes'
+        
       }}
       />
       
@@ -76,26 +83,43 @@ const EditarViajes = () => {
             </div>
             <div className="form-group">
                 <label htmlFor="nPlaza">Numero de Plaza</label>
-                <input type="number" className="form-control" value={Viajes.nPlaza} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})}  id="nPlaza" placeholder="Ingresar Nombre" />
+                <input type="number" readOnly={!Loading} className="form-control" value={Viajes.nPlaza} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})}  id="nPlaza" placeholder="Ingresar Nombre" />
             </div>
             <div className="form-group">
                 <label htmlFor="Destino">Destino</label>
                 <div className="input-group">
-                    <input type="text" className="form-control" value={Viajes.Destino} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="Destino" />
+                    <input type="text" readOnly={!Loading} className="form-control" value={Viajes.Destino} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="Destino" />
                 </div>
             </div>
             <div className="form-group">
                 <label htmlFor="lOrigen">Lugar Origen</label>
-                <input type="text" className="form-control" value={Viajes.lOrigen} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="lOrigen" />
+                <input type="text" readOnly={!Loading} className="form-control" value={Viajes.lOrigen} onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} id="lOrigen" />
             </div>
             <div className="form-group">
                 <label htmlFor="precio">Precio</label>
-                <input type="number" className="form-control" value={Viajes.precio} id="precio" onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} />
+                <input type="number" readOnly={!Loading} className="form-control" value={Viajes.precio} id="precio" onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} />
             </div>
             </div>
             <div className="card-footer">
-            <button type="submit" className="btn btn-primary">Actualizar</button>
-            <Link to="/listaViajes" href="#" className="btn btn-default">Atras</Link>
+            {(Loading) ? <button 
+                          className="btn btn-primary" 
+                          type="button" 
+                          disabled>
+                         <span 
+                          className="spinner-grow spinner-grow-sm" 
+                          role="status" 
+                          aria-hidden="true" />
+                            Loading...
+                          </button>
+                        : 
+                        <button 
+                         type="submit" 
+                         className="btn btn-primary">
+                         Actualizar
+                         </button>
+                        }
+                        <Link to="/listaViajes" href="#" className="btn btn-default">Atras</Link>
+                        
 
             </div>
         </form>

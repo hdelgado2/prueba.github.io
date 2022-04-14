@@ -4,7 +4,7 @@ namespace App\Entity;
 
 use App\Repository\ViajesRepository;
 use Doctrine\ORM\Mapping as ORM;
-
+use Symfony\Component\Validator\Constraints as Assert;
 /**
  * @ORM\Entity(repositoryClass=ViajesRepository::class)
  */
@@ -19,26 +19,31 @@ class Viajes
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank
      */
     private $codigo_viaje;
 
     /**
      * @ORM\Column(type="string", length=30)
+     * @Assert\NotBlank
      */
     private $num_plaza;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Assert\NotBlank
      */
     private $destino;
 
     /**
      * @ORM\Column(type="string", length=50)
+     * @Assert\NotBlank
      */
     private $origen;
 
     /**
      * @ORM\Column(type="float")
+     * @Assert\NotBlank
      */
     private $precio;
 

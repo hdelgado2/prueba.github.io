@@ -9,7 +9,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Viajes;
 use Symfony\Component\HttpFoundation\Request;
-
+use Symfony\Component\Validator\Validator\ValidatorInterface;
  /**
  * @Route("/api/viaje", name="update")
  */
@@ -19,7 +19,11 @@ class ViajesController extends AbstractController
     /**
      * @Route("/create", name="crear",methods={"POST"})
      */
-    public function created(Request $request,ManagerRegistry $doctrine):Response
+    public function created(
+        Request $request,
+        ManagerRegistry $doctrine,
+        ValidatorInterface $validator
+        ):Response
     {
        $datos = json_decode($request->getContent());
        $entityManager = $doctrine->getManager();
@@ -29,6 +33,18 @@ class ViajesController extends AbstractController
        $viaje->setDestino($datos->Destino);
        $viaje->setOrigen($datos->lOrigen);
        $viaje->setPrecio($datos->precio);
+       $error = $validator->validate($viaje);
+       if(count($error) > 0){
+            $errores =[];
+            foreach ($error as $key) {
+                
+                $errores[] = [
+                    'errores' => (string)$key
+                ];
+            }
+            
+            return new Response(json_encode($errores));
+       }
        $entityManager->persist($viaje);
        $entityManager->flush();
        return new Response(json_encode('Se Ha Registrado Un nuevo Cliente '));
