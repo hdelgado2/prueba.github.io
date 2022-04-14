@@ -23,10 +23,6 @@ const Menu = () => {
           <li className="nav-item">
             <Link href="#" to='/' className="nav-link">Listado de Cliente Viajeros</Link>
           </li>
-          
-          <li className="nav-item">
-            <Link href="#" to='/registroViajes' className="nav-link">Registro de Viajes</Link>
-          </li>
            <li className="nav-item">
             <Link href="#" to="/listaViajes" className="nav-link">Lista de Viajes disponible</Link>
           </li> 

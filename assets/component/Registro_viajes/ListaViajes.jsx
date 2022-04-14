@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const ListaViajes = () => {
     const [Listado, setListado] = useState([]);
-
+    const [Filtro, setFiltro] = useState("");
     useEffect(() => {
         const fetchData = async() => {
             let data = await fetch('/api/viaje/lista');
@@ -17,6 +17,13 @@ const ListaViajes = () => {
         fetchData()
     }, [])
 
+    const filtrar = async(e) => {
+        e.preventDefault();
+        let fetchData = await fetch('/api/viaje/filtro/'+JSON.stringify(Filtro))
+        let data = fetchData.json();
+        data.then(({data}) => setListado(data));
+    }
+
     return (
         <>
          <div className="row">
@@ -24,11 +31,14 @@ const ListaViajes = () => {
             <div className="card">
             <div className="card-header">
                 <h3 className="card-title">Lista de Vuelos</h3>
+                <br />
+                <Link href="#" to='/registroViajes' className="btn btn-primary">Registro de Viajes</Link>
                 <div className="card-tools">
                 <div className="input-group input-group-sm" style={{width: 150}}>
-                    <input type="text"   name="table_search" className="form-control float-right" placeholder="Search" />
+                
+                    <input type="text" onChange={e => setFiltro(e.target.value)}  name="table_search" className="form-control float-right" placeholder="Search" />
                     <div className="input-group-append">
-                    <button type="submit"  className="btn btn-default"><i className="fas fa-search" /></button>
+                    <button type="submit"  className="btn btn-default" onClick={e => filtrar(e)}><i className="fas fa-search" /></button>
                     </div>
                 </div>
                 </div>

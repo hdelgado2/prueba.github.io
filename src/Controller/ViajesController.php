@@ -59,4 +59,30 @@ class ViajesController extends AbstractController
         ]);
         return $response;
     }
+
+    /**
+     * @Route("/filtro/{id}", name="filtro",methods={"GET"})
+     */
+    public function filtro(ManagerRegistry $doctrine,$id)
+    {
+        $viaje = $doctrine->getRepository(Viajes::class);
+        $viajes = $viaje->findByExampleField(json_decode($id));
+        $viajesArray = [];
+        foreach ($viajes as $viajero) {
+            $viajesArray[] = [
+                'id' => $viajero->getId(),
+                'codigo' => $viajero->getCodigoViaje(),
+                'destino' => $viajero->getDestino(),
+                'origen' => $viajero->getOrigen(),
+                'precio' => $viajero->getPrecio()
+            ];
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => 200,
+            'data' => $viajesArray
+        ]);
+        return $response;
+    }
 }

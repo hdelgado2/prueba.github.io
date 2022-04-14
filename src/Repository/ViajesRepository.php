@@ -48,19 +48,19 @@ class ViajesRepository extends ServiceEntityRepository
     // /**
     //  * @return Viajes[] Returns an array of Viajes objects
     //  */
-    /*
-    public function findByExampleField($value)
+    
+    public function findByExampleField($codigo)
     {
         return $this->createQueryBuilder('v')
-            ->andWhere('v.exampleField = :val')
-            ->setParameter('val', $value)
+            ->andWhere('v.codigo_viaje like :val')
+            ->setParameter('val', '%'.strtoupper($codigo).'%')
             ->orderBy('v.id', 'ASC')
             ->setMaxResults(10)
             ->getQuery()
             ->getResult()
         ;
     }
-    */
+    
 
     /*
     public function findOneBySomeField($value): ?Viajes
