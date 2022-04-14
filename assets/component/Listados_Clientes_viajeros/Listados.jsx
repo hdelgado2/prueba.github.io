@@ -63,9 +63,13 @@ const Listados = () => {
         <div className="col-12">
             <div className="card">
             <div className="card-header">
-                <h3 className="card-title">Lista de Viajes</h3>
+                <h3 className="card-title">Lista de Viajes y Vuelos</h3>
+                <div className="col-sm-4 mt-2">
+                <Link href="#" to='/registro' className="btn btn-primary">Registro de Clientes</Link>
+                </div>
                 <div className="card-tools">
                 <div className="input-group input-group-sm" style={{width: 150}}>
+                
                     <input type="text" onChange={e=>setFiltro(e.target.value)}  name="table_search" className="form-control float-right" placeholder="Search" />
                     <div className="input-group-append">
                     <button type="submit" onClick={e => fetchFiltro()} className="btn btn-default"><i className="fas fa-search" /></button>

@@ -5,6 +5,8 @@ import Registro from '../Registro/Registro';
 import Editar from '../Registro/Editar';
 import Error from '../Error';
 import Detalles from '../Registro/Detalles';
+import RegistroViajes from '../Registro_viajes/RegistroViajes';
+import ListaViajes from '../Registro_viajes/ListaViajes';
 const Menu = () => {
     return (
 <>
@@ -21,12 +23,13 @@ const Menu = () => {
           <li className="nav-item">
             <Link href="#" to='/' className="nav-link">Listado de Cliente Viajeros</Link>
           </li>
+          
           <li className="nav-item">
-            <Link href="#" to='/registro' className="nav-link">Registro de Clientes</Link>
+            <Link href="#" to='/registroViajes' className="nav-link">Registro de Viajes</Link>
           </li>
-          <li className="nav-item">
-            <Link href="#" to='/registro' className="nav-link">Registro de Viajes</Link>
-          </li>
+           <li className="nav-item">
+            <Link href="#" to="/listaViajes" className="nav-link">Lista de Viajes disponible</Link>
+          </li> 
         </ul>
       </div>
     </div>
@@ -38,6 +41,8 @@ const Menu = () => {
           <Route path="/registro" element={<Registro />} />
           <Route path="/editar/:id" element={<Editar />} />
           <Route path="/detalles/:id" element={<Detalles />} />
+          <Route path="/registroViajes" element={<RegistroViajes />} />
+          <Route path="/listaViajes" element={<ListaViajes />} />
 
           <Route path="*" element={<Error />} />
       </Routes>
