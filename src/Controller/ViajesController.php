@@ -183,18 +183,37 @@ class ViajesController extends AbstractController
      /**
      * @Route("/update/{id}", name="update",methods={"POST"})
      */
-    public function update(ManagerRegistry $doctrine,$id,Request $request):Response
+    public function update(ManagerRegistry $doctrine,
+                           $id,
+                           Request $request,
+                           ValidatorInterface $validator):Response
     {
         $datos = json_decode($request->getContent());
-        
         $entityManager = $doctrine->getManager();
         $viaje = $doctrine->getRepository(Viajes::class);
         $viajes = $viaje->find($id);
         $viajes->setDestino($datos->Destino);
         $viajes->setOrigen($datos->lOrigen);
-        $viajes->setPrecio(floatval($datos->precio));
+        $viajes->setPrecio($datos->precio);
         $viajes->setNumPlaza(strval($datos->nPlaza));
         $viajes->setCodigoViaje($datos->codViajes);
+
+        $error = $validator->validate($viajes);
+       
+       if(count($error) > 0){
+            $errores =[];
+            foreach ($error as $key) {
+                
+                $errores[] = [
+                    'errores' => (string)$key->getMessage(),
+                    'campo' => $key->getPropertyPath(),
+                    'is_invalid' => true
+                ];
+            }
+            
+            return new Response(json_encode($errores));
+       }
+
         $entityManager->persist($viajes);
         $entityManager->flush();
         

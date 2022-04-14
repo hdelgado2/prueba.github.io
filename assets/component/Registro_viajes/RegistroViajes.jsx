@@ -25,8 +25,8 @@ const RegistroViajes = () => {
     const [DestinoInvalid, setDestinoInvalid] = useState(false)
     const [Origen, setOrigen] = useState("")
     const [OrigenInvalid, setOrigenInvalid] = useState(false)
-    const [Precio, setsetPrecio] = useState("");
-    const [PrecioInvalid, setsetPrecioInvalid] = useState(false);
+    const [Precio, setPrecio] = useState("");
+    const [PrecioInvalid, setPrecioInvalid] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -97,7 +97,10 @@ const RegistroViajes = () => {
       </div>
       <div className="form-group">
         <label htmlFor="nPlaza">Numero de Plaza</label>
-        <input type="text" className={`form-control ${ num_plazaInvalid ? 'is-invalid' : 'form-control'}`}  onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})}  id="nPlaza" placeholder="Ingresar Nombre" />
+        <input type="text" 
+        className={`form-control ${ num_plazaInvalid ? 'is-invalid' : 'form-control'}`}  onChange={e=>setViajes({...Viajes,[e.target.id]:e.target.value})} 
+        id="nPlaza"
+        placeholder="Ingresar Nombre" />
         {num_plazaInvalid && <p style={{color:"red"}}>{num_plaza}</p>}
       </div>
       <div className="form-group">
