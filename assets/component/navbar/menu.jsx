@@ -5,8 +5,11 @@ import Registro from '../Registro/Registro';
 import Editar from '../Registro/Editar';
 import Error from '../Error';
 import Detalles from '../Registro/Detalles';
+import Detalles2 from '../Registro_viajes/Detalles';
+
 import RegistroViajes from '../Registro_viajes/RegistroViajes';
 import ListaViajes from '../Registro_viajes/ListaViajes';
+import EditarViajes from '../Registro_viajes/EditarViajes';
 const Menu = () => {
     return (
 <>
@@ -39,7 +42,8 @@ const Menu = () => {
           <Route path="/detalles/:id" element={<Detalles />} />
           <Route path="/registroViajes" element={<RegistroViajes />} />
           <Route path="/listaViajes" element={<ListaViajes />} />
-
+          <Route path="/detallesviajes/:id" element={<Detalles2/>}/>
+          <Route path="/editarviajes/:id" element={<EditarViajes/>}/>
           <Route path="*" element={<Error />} />
       </Routes>
 

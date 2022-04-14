@@ -24,6 +24,15 @@ const ListaViajes = () => {
         data.then(({data}) => setListado(data));
     }
 
+    const deleted = async(e,id) => {
+        e.preventDefault();
+        
+        let deletedData = await fetch('/api/viaje/deleted/'+id)
+        let listaUpdate = deletedData.json();
+
+        listaUpdate.then(({data}) => setListado(data))
+    }
+
     return (
         <>
          <div className="row">
@@ -67,9 +76,9 @@ const ListaViajes = () => {
                             <td>{elem.destino}</td>
                             <td>{elem.precio}</td>
                             <td>
-                                <Link to="*" className="btn btn-primary"><i className='fa fa-edit'></i></Link>
-                                <a  className="btn btn-danger"><i className='fa fa-trash'></i></a>
-                                <Link to="*" className="btn btn-warning"><i className='fa fa-book'></i></Link> 
+                                <Link to={"/editarviajes/"+elem.id} className="btn btn-primary"><i className='fa fa-edit'></i></Link>
+                                <a onClick={e=>deleted(e,elem.id)} className="btn btn-danger"><i className='fa fa-trash'></i></a>
+                                <Link to={"/detallesviajes/"+elem.id} className="btn btn-warning"><i className='fa fa-book'></i></Link> 
                             </td>
                             </tr>
                         ))

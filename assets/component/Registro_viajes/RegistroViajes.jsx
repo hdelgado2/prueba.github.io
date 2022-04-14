@@ -40,7 +40,7 @@ const RegistroViajes = () => {
       icon="success"
       onConfirm={() => {
         setSweet(false)
-        navigate('/')
+        navigate('/listaViajes')
       }}
       />
 <div className="card card-primary">

@@ -85,4 +85,79 @@ class ViajesController extends AbstractController
         ]);
         return $response;
     }
+
+     /**
+     * @Route("/deleted/{id}", name="deleted",methods={"GET"})
+     */
+    public function deleted(ManagerRegistry $doctrine,$id)
+    {
+        $entityManager = $doctrine->getManager();
+        $viaje = $doctrine->getRepository(Viajes::class);
+        $viajes = $viaje->find($id);
+        $entityManager->remove($viajes);
+        $entityManager->flush();
+        $viajeUpdate = $viaje->findAll();
+        $viajesArray = [];
+        foreach ($viajeUpdate as $viajero) {
+            $viajesArray[] = [
+                'id' => $viajero->getId(),
+                'codigo' => $viajero->getCodigoViaje(),
+                'destino' => $viajero->getDestino(),
+                'origen' => $viajero->getOrigen(),
+                'precio' => $viajero->getPrecio()
+            ];
+        }
+
+        $response = new JsonResponse();
+        $response->setData([
+            'success' => 200,
+            'data' => $viajesArray
+        ]);
+        return $response;
+    }
+
+      /**
+     * @Route("/detallesViajes/{id}", name="detalles",methods={"GET"})
+     */
+    public function detalles(ManagerRegistry $doctrine,$id)
+    {
+        $entityManager = $doctrine->getManager();
+        $viaje = $doctrine->getRepository(Viajes::class);
+        $viajes = $viaje->find($id);
+            $viajesArray[] = [
+                'id' => $viajes->getId(),
+                'codigo' => $viajes->getCodigoViaje(),
+                'destino' => $viajes->getDestino(),
+                'origen' => $viajes->getOrigen(),
+                'precio' => $viajes->getPrecio(),
+                'disponible' => intval($viajes->getNumPlaza())
+            ];
+        $response = new JsonResponse();
+        $response->setData([
+            'data' => $viajesArray
+        ]);
+        return $response;
+    }
+    /**
+     * @Route("/edit/{id}", name="edit",methods={"GET"})
+     */
+    public function edit(ManagerRegistry $doctrine,$id)
+    {
+        $entityManager = $doctrine->getManager();
+        $viaje = $doctrine->getRepository(Viajes::class);
+        $viajes = $viaje->find($id);
+            $viajesArray[] = [
+                'id' => $viajes->getId(),
+                'codigo' => $viajes->getCodigoViaje(),
+                'destino' => $viajes->getDestino(),
+                'origen' => $viajes->getOrigen(),
+                'precio' => intval($viajes->getPrecio()),
+                'disponible' => intval($viajes->getNumPlaza())
+            ];
+        $response = new JsonResponse();
+        $response->setData([
+            'data' => $viajesArray
+        ]);
+        return $response;
+    }
 }
