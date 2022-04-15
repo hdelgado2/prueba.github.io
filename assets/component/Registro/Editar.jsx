@@ -18,7 +18,8 @@ const Editar = () => {
         "fechaN":"",
         "telf":"",
         "id":"",
-        viajes:[]
+        viajes:[],
+        "elimiViajes":[]
       })
     const [Loading, setLoading] = useState(false);
     const [RegiTravel, setRegiTravel] = useState([]);
@@ -44,7 +45,8 @@ const Editar = () => {
                    "fechaN":data[0]["fech"],
                    "telf":data[0]['telf'],
                    "id":data[0]['id'],
-                   viajes:ViajesR
+                   viajes:ViajesR,
+                   "elimiViajes":[]
                })
 
                setViajes(viajes);
@@ -104,9 +106,12 @@ const Editar = () => {
     }
     const DeleteItem = (id) => {
         var tempDelete = Editar.viajes.filter((elem,index) => (elem['id'] !== Number(id)) );
+        var DeleteViaje = Editar.viajes.filter((elem,index) => (elem['id'] === Number(id)) );
+
         setEditar({
             ...Editar,
-            viajes:tempDelete
+            viajes:tempDelete,
+            'elimiViajes':[...Editar.elimiViajes,DeleteViaje[0]]
         })
     }
     return (
