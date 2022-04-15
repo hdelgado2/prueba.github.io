@@ -114,6 +114,7 @@ bin/console doctrine:migrations:migrate
 ya teniendo instalado todo
 Ejecutar comando symfony server:start
 iniciara el servidor en el terminal ya sea linux o windows
+y abrir navegador con la direccion del servidor y ahi el sistema arrancara 
 
 -Esquema de la BD
 -Tabla
