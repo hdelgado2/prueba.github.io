@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { useNavigate, useLocation } from 'react-router-dom'
 import SweetAlert from 'sweetalert2-react';
 import { Link } from "react-router-dom";
-
+import { array } from 'prop-types';
 
 const Editar = () => {
     let {pathname} = useLocation();
@@ -11,15 +11,18 @@ const Editar = () => {
     const [Sweet, setSweet] = useState(false)
     const [Resultado, setResultado] = useState("")
     const navigate = useNavigate()
+    const [Viajes, setViajes] = useState([]);
     const [Editar, setEditar] = useState({
         "ced":"",
         "nombre":"",
         "fechaN":"",
         "telf":"",
-        "id":""
+        "id":"",
+        viajes:[]
       })
-      const [Loading, setLoading] = useState(false);
-
+    const [Loading, setLoading] = useState(false);
+    const [RegiTravel, setRegiTravel] = useState([]);
+    
     /* Hooks de Validacion */
     const [Ced, setCed] = useState("");
     const [CedValid, setCedValid] = useState(false);
@@ -33,24 +36,29 @@ const Editar = () => {
        const fetchData = async() => {
            let data = await fetch('/pullCliente/'+params)
            let prueba = data.json();
-           prueba.then(({data}) =>{
-            
+           prueba.then(({data,viajes,ViajesR}) =>{
+                console.log()
                setEditar({
                    "nombre":data[0]["name"],
                    "ced":data[0]['ced'],
                    "fechaN":data[0]["fech"],
                    "telf":data[0]['telf'],
-                   "id":data[0]['id']
+                   "id":data[0]['id'],
+                   viajes:ViajesR
                })
+
+               setViajes(viajes);
            })
        }
        fetchData()
+
+
     },[]);
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
         setLoading(true);
-
+        
         let datos = await fetch('/updateCliente',{
             method:'POST',
             body: JSON.stringify(Editar)
@@ -77,11 +85,30 @@ const Editar = () => {
               }
       
               setLoading(false);
-
         })
 
     }
 
+    function capturar(e){
+        var search = Editar.viajes.filter((elem) => (elem.id === Number(e.target.value)))
+        if(search.length > 0) return ;//no permite añadir otro igual
+
+        var capture = Viajes.filter((elem) => (elem.id === Number(e.target.value)))
+        var objet = Object.assign([],capture);
+
+        setEditar({
+            ...Editar,
+            viajes:[...Editar.viajes,objet[0]]
+        });
+        
+    }
+    const DeleteItem = (id) => {
+        var tempDelete = Editar.viajes.filter((elem,index) => (elem['id'] !== Number(id)) );
+        setEditar({
+            ...Editar,
+            viajes:tempDelete
+        })
+    }
     return (
         <>
      <SweetAlert
@@ -143,7 +170,44 @@ const Editar = () => {
                     id="telf" />
                     {TelfInvalid && <p style={{color:"red"}}>{Telf}</p>}
                 </div>
+                <label>Agregar Viaje</label>
+                <select onChange={e => capturar(e)} className="form-control">
+                <option value="0" selected disabled>Seleccione</option>
+                {Viajes.map((elem,index) => 
+                        <option key={index} value={elem.id}>{elem.codigo_viaje+' - '+elem.origen+' - '+elem.destino}</option>
+                        )}
+                </select>
+                
                 </div>
+
+                <div className="col-md-12">
+                    <h5>Detalles de viajes</h5>
+                        <table  className="table table-hover">
+                        <thead align="center">
+                            <tr>
+                            <th>Codigo</th>
+                            <th>Destino</th>
+                            <th>Numero de Plazas</th>
+                            <th>Lugar Origen</th> 
+                            <th>Precio</th>
+                            <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody align="center">
+                            {Editar.viajes.map((elem,index) => 
+                            <tr key={index}>
+                                <td>{elem['codigo_viaje']}</td>
+                                <td>{elem['destino']}</td>
+                                <td>{elem['num_plaza']}</td>
+                                <td>{elem['origen']}</td>
+                                <td>{elem['precio']}</td>
+                                <td><a onClick={e => DeleteItem(elem['id'])} className="btn btn-danger"><i className='fa fa-trash'></i></a>
+</td>
+                            </tr>
+                            )}
+                        </tbody>
+                        </table>
+                        </div>
                 <div className="card-footer">
                 {(Loading) ? <button 
                           className="btn btn-primary" 

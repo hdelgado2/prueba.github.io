@@ -61,7 +61,15 @@ class ViajesRepository extends ServiceEntityRepository
         ;
     }
     
-
+    public function findTravelExist()
+    {
+        return $this->createQueryBuilder('v')
+            ->andWhere('v.num_plaza > 0')
+            ->orderBy('v.id', 'ASC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
     /*
     public function findOneBySomeField($value): ?Viajes
     {

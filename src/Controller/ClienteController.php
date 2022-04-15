@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use App\Entity\Cliente;
+use App\Entity\Viajes;
+use App\Entity\PasajerosViajes;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use App\Service\ClienteManager;
@@ -161,7 +163,7 @@ class ClienteController extends AbstractController
        $clientes = $cliente1->find($id);
        
         $clientesArray = [];
-            $date = new DateTime($clientes->getFechaNacimiento());
+        $date = new DateTime($clientes->getFechaNacimiento());
             
            $clientesArray[] = [
                'id' => $clientes->getId(),
@@ -170,9 +172,45 @@ class ClienteController extends AbstractController
                'fech' => date_format($date->format,'d/m/Y'),
                'telf' => $clientes->getTelf()
            ];
+
+           $viajes = $doctrine->getRepository(Viajes::class);
+           $ViajesDisponible = $viajes->findTravelExist();
+           
+           $viajesExiste = [];
+           
+           foreach ($ViajesDisponible as $key) {
+          
+               $viajesExiste[] = [
+                   'id' => $key->getId(),
+                   'codigo_viaje' => $key->getCodigoViaje(),
+                   'num_plaza' => $key->getNumPlaza(),
+                   'destino' => $key->getDestino(),
+                   'origen' => $key->getOrigen(),
+                   'precio' => $key->getPrecio()
+               ];
+           }
+
+
+            $viajes = $doctrine->getRepository(PasajerosViajes::class);
+            $viajeClientes = $viajes->findByCliente($id);
+                $viajesR = [];
+                foreach ($viajeClientes as $key) {
+                    $viajesRelations = $doctrine->getRepository(Viajes::class)->find($key->getIdViaje());
+                    $viajesR[] = [
+                        'id' => $viajesRelations->getId(),
+                        'codigo_viaje' => $viajesRelations->getCodigoViaje(),
+                        'num_plaza' => $viajesRelations->getNumPlaza(),
+                        'destino' => $viajesRelations->getDestino(),
+                        'origen' => $viajesRelations->getOrigen(),
+                        'precio' => $viajesRelations->getPrecio()
+                    ];
+                }
+
        $response = new JsonResponse();
        $response->setData([
-           'data' => $clientesArray
+           'data' => $clientesArray,
+           'viajes' => $viajesExiste,
+           'ViajesR' => $viajesR
        ]);
        return $response;
     }
@@ -212,6 +250,16 @@ class ClienteController extends AbstractController
            
            return new Response(json_encode($errores));
       }
+
+      $viajes = $doctrine->getRepository(Viajes::class);
+      foreach ($data->viajes as $key) {
+          $pasajeros = new PasajerosViajes();
+          $pasajeros->setIdCliente($clientes->getId());
+          $pasajeros->setIdViaje($key->id);
+          $em->persist($pasajeros);  
+          $em->flush();
+      }
+
 
         $em->persist($clientes);
         $em->flush();
