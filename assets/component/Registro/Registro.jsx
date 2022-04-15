@@ -18,6 +18,15 @@ const Registro = () => {
   const [Cargando, setCargando] = useState(false)
   const [Resultado, setResultado] = useState("")
   const navigate = useNavigate()
+
+  /* Hooks de Validacion */
+    const [Ced, setCed] = useState("");
+    const [CedValid, setCedValid] = useState(false);
+    const [Nombre, setNombre] = useState("")
+    const [NombreInvalid, setNombreInvalid] = useState(false)
+    const [Telf, setTelf] = useState("")
+    const [TelfInvalid, setTelfInvalid] = useState(false)
+    
     /**
      * Capturamos los datos mediante un evento
      */
@@ -27,19 +36,35 @@ const Registro = () => {
 
     const handleSubmit = async (e) =>{
       e.preventDefault();
-      setCargando(true);
       let prueba = await fetch('/cliente',{
          method:'POST',
           body: JSON.stringify(Datos)
       });
       let data = prueba.json();
       data.then((resul) => {
-          setResultado(resul)
-          
+        console.log(resul)
+          if(resul === 'Se Ha Registrado Un nuevo Cliente'){
+            setSweet(true);
+            setResultado(resul);
+            
+          }else{
+            resul.map((elem) => {
+              if(elem.campo === 'name'){
+                setNombre(elem.errores);
+                setNombreInvalid(elem.is_invalid);
+              }else if(elem.campo === 'cedula'){
+                setCed(elem.errores);
+                setCedValid(elem.is_invalid);
+              }else if(elem.campo === 'telf'){
+                setTelf(elem.errores);
+                setTelfInvalid(elem.is_invalid);
+              }
+            })
+          }
       });  
       
       setCargando(false)
-      navigate('/');
+      
     }
 
     const Loading = () => {
@@ -58,23 +83,38 @@ const Registro = () => {
       title="Exito"
       text={Resultado}
       icon="success"
-      onConfirm={() => setSweet(false)}
+      onConfirm={() => {
+        setSweet(false)
+        navigate('/');
+      }}
       />
-      {Cargando && <Loading/>}
 
 <div className="card card-primary">
   <div className="card-header">
     <h3 className="card-title">Registro de Clientes</h3>
   </div>
-  <form role="form" onSubmit={e => handleSubmit(e) | setSweet(true)}>
+  <form role="form" onSubmit={e => handleSubmit(e)}>
     <div className="card-body">
       <div className="form-group">
         <label htmlFor="ced">Cedula</label>
-        <input type="text" onChange={e => handleChange(e)} id="ced" className="form-control" placeholder="Ingresar Cedula" />
+        <input 
+         type="text" 
+         onChange={e => handleChange(e)} 
+         id="ced" 
+         className={`form-control ${CedValid ? 'is-invalid' : 'form-control'}`} 
+         placeholder="Ingresar Cedula" 
+          />
+        {CedValid && <p style={{color:"red"}}>{Ced}</p>}
+
       </div>
       <div className="form-group">
         <label htmlFor="nombre">Nombre</label>
-        <input type="text" className="form-control" onChange={e => handleChange(e)} id="nombre" placeholder="Ingresar Nombre" />
+        <input 
+          type="text" 
+          className={`form-control ${NombreInvalid ? 'is-invalid' : 'form-control'}`} 
+          onChange={e => handleChange(e)} id="nombre" placeholder="Ingresar Nombre" />
+          {NombreInvalid && <p style={{color:"red"}}>{Nombre}</p>}
+
       </div>
       <div className="form-group">
         <label htmlFor="Fecha">Fecha de Nacimiento</label>
@@ -84,7 +124,11 @@ const Registro = () => {
       </div>
       <div className="form-group">
         <label htmlFor="telf">Telefono</label>
-        <input type="text" className="form-control" onChange={e => handleChange(e)} id="telf" />
+        <input 
+         type="text" 
+         className={`form-control ${TelfInvalid ? 'is-invalid' : 'form-control'}`} 
+         onChange={e => handleChange(e)} id="telf" />
+         {TelfInvalid && <p style={{color:"red"}}>{Telf}</p>}
       </div>
     </div>
     <div className="card-footer">

@@ -12,6 +12,8 @@ use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 use App\Service\ClienteManager;
 use Symfony\Component\Validator\Constraints\DateTime;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
 
 class ClienteController extends AbstractController
 {
@@ -54,20 +56,46 @@ class ClienteController extends AbstractController
      * @Route("/cliente", name="app_cliente",methods={"POST"})
      * 
      */
-    public function index(Request $request,ManagerRegistry $doctrine): Response
+    public function index(
+    Request $request,
+    ManagerRegistry $doctrine,
+    ValidatorInterface $validator): Response
     {
         $datos_p = json_decode($request->getContent());
+        
+        
         $entityManager = $doctrine->getManager();
-
         $cliente = new Cliente();
         $cliente->setName($datos_p->nombre);
         $cliente->setCedula($datos_p->ced);
-        $cliente->setFechaNacimiento(new \DateTime($datos_p->FechaN));
+        if($datos_p->fechaN === "") {
+            
+            $cliente->setFechaNacimiento(new \DateTime());
+
+        }else{
+            $cliente->setFechaNacimiento(new \DateTime($datos_p->fechaN));
+        }
+        
         $cliente->setTelf($datos_p->telf);
+
+        $error = $validator->validate($cliente);
+        if(count($error) > 0){
+            $errores =[];
+            foreach ($error as $key) {
+                
+                $errores[] = [
+                    'errores' => (string)$key->getMessage(),
+                    'campo' => $key->getPropertyPath(),
+                    'is_invalid' => true
+                ];
+            }
+            
+            return new Response(json_encode($errores));
+       }
         $entityManager->persist($cliente);
         $entityManager->flush();
 
-        return new Response(json_encode('Se Ha Registrado Un nuevo Cliente '.$cliente->getName()));
+        return new Response(json_encode('Se Ha Registrado Un nuevo Cliente'));
         
     }
     /**

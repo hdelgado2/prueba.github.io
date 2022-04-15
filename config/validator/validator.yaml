@@ -15,3 +15,17 @@ App\Entity\Viajes:
           precio:
               - NotBlank: 
                     message: "Error el campo codigo no puede quedar vacio"
+App\Entity\Cliente:
+    properties:
+          name:
+              - NotBlank: 
+                    message: "Error el campo Nombre no puede quedar vacio"
+          fecha_nacimiento:
+              - NotBlank: 
+                    message: "Error el campo nombre no puede quedar vacio"
+          cedula:
+              - NotBlank: 
+                    message: "Error el campo Cedula no puede quedar vacio"
+          telf:
+              - NotBlank: 
+                    message: "Error el campo Telefono no puede quedar vacio"
