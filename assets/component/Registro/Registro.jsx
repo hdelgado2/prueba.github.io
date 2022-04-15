@@ -12,12 +12,16 @@ const Registro = () => {
       "ced":"",
       "nombre":"",
       "fechaN":"",
-      "telf":""
+      "telf":"",
+      viajes:[],
+
     })
   const [Sweet, setSweet] = useState(false)
   const [Resultado, setResultado] = useState("")
   const navigate = useNavigate()
   const [Loading, setLoading] = useState(false);
+  const [Viajes, setViajes] = useState([]);
+
 
   /* Hooks de Validacion */
     const [Ced, setCed] = useState("");
@@ -34,6 +38,16 @@ const Registro = () => {
       setDatos({...Datos,[e.target.id]:e.target.value})
     }
 
+    useEffect(() => {
+      const fetchData = async() => {
+        let data = await fetch('/pullViajes')
+        let prueba = data.json();
+        prueba.then(({viajesExiste}) =>{
+            setViajes(viajesExiste);
+        })
+      }
+      fetchData();
+    }, [])
     const handleSubmit = async (e) =>{
       e.preventDefault();
       setLoading(true);
@@ -69,6 +83,29 @@ const Registro = () => {
       
     }
 
+    function capturar(e){
+      var search = Datos.viajes.filter((elem) => (elem.id === Number(e.target.value)))
+      if(search.length > 0) return ;//no permite añadir otro igual
+
+      var capture = Viajes.filter((elem) => (elem.id === Number(e.target.value)))
+      var objet = Object.assign([],capture);
+      console.log(objet);
+      setDatos({
+          ...Datos,
+          viajes:[...Datos.viajes,objet[0]]
+      });
+      
+  }
+
+  const DeleteItem = (id) => {
+    var tempDelete = Datos.viajes.filter((elem,index) => (elem['id'] !== Number(id)) );
+
+    setDatos({
+        ...Datos,
+        viajes:tempDelete,
+    })
+
+}
 
     return (
         <>
@@ -124,7 +161,43 @@ const Registro = () => {
          onChange={e => handleChange(e)} id="telf" />
          {TelfInvalid && <p style={{color:"red"}}>{Telf}</p>}
       </div>
+      <label>Agregar Viaje</label>
+                <select onChange={e => capturar(e)} className="form-control">
+                <option value="0" selected disabled>Seleccione</option>
+                {Viajes.map((elem,index) => 
+                        <option key={index} value={elem.id}>{elem.codigo_viaje+' - '+elem.origen+' - '+elem.destino}</option>
+                        )}
+                </select>
+                <div className="col-md-12">
+                    <h5>Detalles de viajes</h5>
+                        <table  className="table table-hover">
+                        <thead align="center">
+                            <tr>
+                            <th>Codigo</th>
+                            <th>Destino</th>
+                            <th>Numero de Plazas</th>
+                            <th>Lugar Origen</th> 
+                            <th>Precio</th>
+                            <th>Accion</th>
+                            </tr>
+                        </thead>
+                        <tbody align="center">
+                            {Datos.viajes.map((elem,index) => 
+                            <tr key={index}>
+                                <td>{elem['codigo_viaje']}</td>
+                                <td>{elem['destino']}</td>
+                                <td>{elem['num_plaza']}</td>
+                                <td>{elem['origen']}</td>
+                                <td>{elem['precio']}</td>
+                                <td><a onClick={e => DeleteItem(elem['id'])} className="btn btn-danger"><i className='fa fa-trash'></i></a>
+                            </td>
+                            </tr>
+                            )}
+                        </tbody>
+                        </table>
+                        </div>
     </div>
+    
     <div className="card-footer">
     {(Loading) ? <button 
                           className="btn btn-primary" 

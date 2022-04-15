@@ -82,7 +82,7 @@ class ClienteController extends AbstractController
     ValidatorInterface $validator): Response
     {
         $datos_p = json_decode($request->getContent());
-        
+        #dd($datos_p);
         
         $entityManager = $doctrine->getManager();
         $cliente = new Cliente();
@@ -114,7 +114,28 @@ class ClienteController extends AbstractController
        }
         $entityManager->persist($cliente);
         $entityManager->flush();
-
+        
+        $cliente1 = $doctrine->getRepository(Cliente::class);
+        $clientes = $cliente1->findOneBy(array('name' => $cliente->getName()));
+        
+        $viajes = $doctrine->getRepository(PasajerosViajes::class);
+       if(count($datos_p->viajes) > 0){
+           foreach ($datos_p->viajes as $key) {
+            $viajes3 = $viajes->findBy(array(
+                'id_cliente' => $clientes->getId(),
+                'id_viaje' => $key->id
+                ));
+            if(count($viajes3) === 0){
+                $pasajeros = new PasajerosViajes();
+                $pasajeros->setIdCliente($clientes->getId());
+                $pasajeros->setIdViaje($key->id);
+                $entityManager->persist($pasajeros);
+                $entityManager->flush();
+            }
+           }
+        
+       }
+        
         return new Response(json_encode('Se Ha Registrado Un nuevo Cliente'));
         
     }
@@ -356,5 +377,34 @@ class ClienteController extends AbstractController
            'viajesR' => $viajesR
        ]);
        return $response;
+    }
+
+    /**
+     * @Route("/pullViajes", name="getViajes",methods={"GET"})
+     * 
+     */    
+    function getViajes(ManagerRegistry $doctrine){
+        
+        $viajes = $doctrine->getRepository(Viajes::class);
+           $ViajesDisponible = $viajes->findTravelExist();
+           
+           $viajesExiste = [];
+           
+           foreach ($ViajesDisponible as $key) {
+          
+               $viajesExiste[] = [
+                   'id' => $key->getId(),
+                   'codigo_viaje' => $key->getCodigoViaje(),
+                   'num_plaza' => $key->getNumPlaza(),
+                   'destino' => $key->getDestino(),
+                   'origen' => $key->getOrigen(),
+                   'precio' => $key->getPrecio()
+               ];
+           }
+           $response = new JsonResponse();
+           $response->setData([
+               'viajesExiste' => $viajesExiste
+           ]);
+           return $response;
     }
 }
