@@ -14,9 +14,12 @@ class Cliente
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @ORM\OneToOne(targetEntity="App\Entity\PasajerosViajes", mappedBy="id_cliente")
      */
+ 
     private $id;
 
+    
     /**
      * @ORM\Column(type="string", length=50)
      */
@@ -36,6 +39,8 @@ class Cliente
      * @ORM\Column(type="string", length=30)
      */
     private $telf;
+
+    
 
     public function getId(): ?int
     {

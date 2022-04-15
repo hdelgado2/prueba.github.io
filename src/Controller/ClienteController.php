@@ -22,7 +22,7 @@ class ClienteController extends AbstractController
 
     /**
      * @Route("/deletePasajero/{id}", name="delete",methods={"GET"})
-     * 
+     *  
      */
     public function delete(ManagerRegistry $doctrine,$id)
     {
@@ -30,8 +30,26 @@ class ClienteController extends AbstractController
         $cliente1 = $doctrine->getRepository(Cliente::class);
         $clientes = $cliente1->find($id);
         
+        $viajesRla = $doctrine->getRepository(PasajerosViajes::class);
+        $viajesRla2 = $viajesRla->findBy(array('id_cliente' => (int)$id));  
+        if(count($viajesRla2) > 0){
+            foreach ($viajesRla2 as $key) {
+                
+                $viajesRla3 = $viajesRla->findOneBy(array(
+                'id_cliente' => (int) $id,
+                'id_viaje' => $key->getIdViaje()
+                ));  
+                    
+                if($viajesRla3 !== null){
+                    $entityManager->remove($viajesRla3);
+                    $entityManager->flush();
+                }
+            }
+        
+        }
         $entityManager->remove($clientes);
         $entityManager->flush();
+        
         $listado = $cliente1->findAll();
         $clientesArray = [];
         foreach ($listado as $cliente) {
@@ -254,7 +272,7 @@ class ClienteController extends AbstractController
            return new Response(json_encode($errores));
       }
 
-      //$viajes = $doctrine->getRepository(Viajes::class);
+
       if(count($data->viajes) > 0){
       foreach ($data->viajes as $key) {
         $viajesRla = $doctrine->getRepository(PasajerosViajes::class);
@@ -270,12 +288,7 @@ class ClienteController extends AbstractController
          
       }
     }
-    /*$entityManager = $doctrine->getManager();
-    $cliente1 = $doctrine->getRepository(Cliente::class);
-    $clientes = $cliente1->find($id);
-    
-    $entityManager->remove($clientes);
-    $entityManager->flush();*/
+
 
       if(count($data->elimiViajes) > 0){
           foreach ($data->elimiViajes as $key) {
