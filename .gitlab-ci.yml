@@ -1,10 +1,14 @@
-image: alpine
-image: busybox
+security-checker:
+    stage: SecurityChecker
+    script:
+        - security-checker security:check composer.lock
+        - local-php-security-checker  --path=./composer.lock
+    allow_failure: false
 
-pages:
-  stage: deploy
-  script:
-    - echo "Copying public dic..."
-  artifacts:
-    paths:
-      - public
+phpcs:
+        - php bin/console doctrine:migration:migrate --env=test --no-interaction
+    script:
+        - php bin/phpunit
+    allow_failure: false
+    allow_failure: false
+
