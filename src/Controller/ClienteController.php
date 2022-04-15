@@ -12,7 +12,6 @@ use App\Entity\Viajes;
 use App\Entity\PasajerosViajes;
 use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Tools\Pagination\Paginator;
-use App\Service\ClienteManager;
 use Symfony\Component\Validator\Constraints\DateTime;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
