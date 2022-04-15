@@ -20,7 +20,7 @@ const Menu = () => {
           <span className="brand-text font-weight-light">Agencia de Viaje</span>
       </a>
       
-      <div className="collapse navbar-collapse order-3" id="navbarCollapse">
+      <div className="navbar-collapse order-3" id="navbarCollapse">
       
         <ul className="navbar-nav">
           <li className="nav-item">
