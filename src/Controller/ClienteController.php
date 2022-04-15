@@ -326,9 +326,34 @@ class ClienteController extends AbstractController
                'fech' => date_format($date->format,'d/m/Y'),
                'telf' => $clientes->getTelf()
            ];
+
+            $viajes = $doctrine->getRepository(PasajerosViajes::class);
+            $viajes3 = $viajes->findBy(array(
+                'id_cliente' => (int) $id
+                ));
+                $viajesR = [];
+                if(count($viajes3) > 0){
+                    
+                    foreach ($viajes3 as $key) {
+                        
+                        $viajesRelations = $doctrine->getRepository(Viajes::class)
+                                        ->find($key->getIdViaje());
+                            
+                            $viajesR[] = [
+                            'id' => $viajesRelations->getId(),
+                            'codigo_viaje' => $viajesRelations->getCodigoViaje(),
+                            'num_plaza' => $viajesRelations->getNumPlaza(),
+                            'destino' => $viajesRelations->getDestino(),
+                            'origen' => $viajesRelations->getOrigen(),
+                            'precio' => $viajesRelations->getPrecio()
+                        ];
+                    }
+                }
+                
        $response = new JsonResponse();
        $response->setData([
-           'data' => $clientesArray
+           'data' => $clientesArray,
+           'viajesR' => $viajesR
        ]);
        return $response;
     }

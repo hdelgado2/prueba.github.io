@@ -8,6 +8,8 @@ const Detalles = () => {
         "fechaN":"",
         "telf":""
       })
+    const [Viajes, setViajes] = useState([]);
+
     let inicio,ruta,params;
     [inicio,ruta,params] = pathname.split("/");
     
@@ -16,13 +18,15 @@ const Detalles = () => {
             let data = await fetch('/detalleCliente/'+params);
             let resut = data.json();
 
-            resut.then(({data}) => {
+            resut.then(({data,viajesR}) => {
                 setDatos({
                     "ced":data[0]['ced'],
                     "nombre":data[0]['name'],
                     "fechaN":data[0]['fech'],
                     "telf":data[0]['telf']
                 })
+
+                setViajes(viajesR);
             })
         }
         fetchData();
@@ -61,13 +65,15 @@ const Detalles = () => {
                             </tr>
                         </thead>
                         <tbody align="center">
-                            <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                           {Viajes.map((elem,index) => 
+                             <tr key={index}>
+                             <td>{elem.codigo_viaje}</td>
+                             <td>{elem.destino}</td>
+                             <td>{elem.num_plaza}</td>
+                             <td>{elem.origen}</td>
+                             <td>{elem.precio}</td>
                             </tr>
+                           )}
                         </tbody>
                         </table>
                 </div>
