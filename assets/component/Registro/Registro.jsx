@@ -15,9 +15,9 @@ const Registro = () => {
       "telf":""
     })
   const [Sweet, setSweet] = useState(false)
-  const [Cargando, setCargando] = useState(false)
   const [Resultado, setResultado] = useState("")
   const navigate = useNavigate()
+  const [Loading, setLoading] = useState(false);
 
   /* Hooks de Validacion */
     const [Ced, setCed] = useState("");
@@ -36,13 +36,14 @@ const Registro = () => {
 
     const handleSubmit = async (e) =>{
       e.preventDefault();
+      setLoading(true);
       let prueba = await fetch('/cliente',{
          method:'POST',
           body: JSON.stringify(Datos)
       });
       let data = prueba.json();
       data.then((resul) => {
-        console.log(resul)
+
           if(resul === 'Se Ha Registrado Un nuevo Cliente'){
             setSweet(true);
             setResultado(resul);
@@ -61,21 +62,14 @@ const Registro = () => {
               }
             })
           }
-      });  
+          setLoading(false);
+        });  
       
-      setCargando(false)
+      
       
     }
 
-    const Loading = () => {
-      return(
-        <>
-        <div className="cargando" >
-          <img className="image" width={50} height={50} src="/gif/Gear-0.2s-800px.gif" />
-        </div>
-        </>
-      )
-    }
+
     return (
         <>
       <SweetAlert
@@ -132,7 +126,23 @@ const Registro = () => {
       </div>
     </div>
     <div className="card-footer">
-      <button type="submit" className="btn btn-primary">Registrar</button>
+    {(Loading) ? <button 
+                          className="btn btn-primary" 
+                          type="button" 
+                          disabled>
+                         <span 
+                          className="spinner-grow spinner-grow-sm" 
+                          role="status" 
+                          aria-hidden="true" />
+                            Loading...
+                          </button>
+                        : 
+                        <button 
+                         type="submit" 
+                         className="btn btn-primary">
+                         Registrar
+                         </button>
+                        }
       <Link to="/" href="#" className="btn btn-default">Atras</Link>
 
     </div>

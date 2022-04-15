@@ -181,7 +181,10 @@ class ClienteController extends AbstractController
      * @Route("/updateCliente", name="update",methods={"POST"})
      * 
      */    
-    public function update(ManagerRegistry $doctrine,Request $request)
+    public function update(
+        ManagerRegistry $doctrine,
+        Request $request,
+        ValidatorInterface $validator)
     {
        $data = json_decode($request->getContent());
        $cliente1 = $doctrine->getRepository(Cliente::class);
@@ -194,9 +197,25 @@ class ClienteController extends AbstractController
        $clientes->setCedula($data->ced);
        $clientes->setTelf($data->telf);
        $clientes->setFechaNacimiento($date);
+
+       $error = $validator->validate($clientes);
+       if(count($error) > 0){
+           $errores =[];
+           foreach ($error as $key) {
+               
+               $errores[] = [
+                   'errores' => (string)$key->getMessage(),
+                   'campo' => $key->getPropertyPath(),
+                   'is_invalid' => true
+               ];
+           }
+           
+           return new Response(json_encode($errores));
+      }
+
         $em->persist($clientes);
         $em->flush();
-        return new Response(json_encode('Se Ha Actualizado El Cliente '.$clientes->getName()));
+        return new Response(json_encode('Se Ha Actualizado El Cliente '));
         
     }
      /**

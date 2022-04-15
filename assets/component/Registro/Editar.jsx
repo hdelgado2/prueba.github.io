@@ -18,7 +18,17 @@ const Editar = () => {
         "telf":"",
         "id":""
       })
-    
+      const [Loading, setLoading] = useState(false);
+
+    /* Hooks de Validacion */
+    const [Ced, setCed] = useState("");
+    const [CedValid, setCedValid] = useState(false);
+    const [Nombre, setNombre] = useState("")
+    const [NombreInvalid, setNombreInvalid] = useState(false)
+    const [Telf, setTelf] = useState("")
+    const [TelfInvalid, setTelfInvalid] = useState(false)
+
+
     useEffect(() =>{
        const fetchData = async() => {
            let data = await fetch('/pullCliente/'+params)
@@ -39,6 +49,8 @@ const Editar = () => {
 
     const HandleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
+
         let datos = await fetch('/updateCliente',{
             method:'POST',
             body: JSON.stringify(Editar)
@@ -46,8 +58,26 @@ const Editar = () => {
 
         let resut = datos.json();
         resut.then((result) => {
-            setResultado(result)
-            setSweet(true)
+            if(result === 'Se Ha Actualizado El Cliente '){
+                setSweet(true);
+                setResultado(result);   
+            }else{
+                result.map((elem) => {
+                  if(elem.campo === 'name'){
+                    setNombre(elem.errores);
+                    setNombreInvalid(elem.is_invalid);
+                  }else if(elem.campo === 'cedula'){
+                    setCed(elem.errores);
+                    setCedValid(elem.is_invalid);
+                  }else if(elem.campo === 'telf'){
+                    setTelf(elem.errores);
+                    setTelfInvalid(elem.is_invalid);
+                  }
+                })
+              }
+      
+              setLoading(false);
+
         })
 
     }
@@ -73,11 +103,26 @@ const Editar = () => {
                 <div className="card-body">
                 <div className="form-group">
                     <label htmlFor="ced">Cedula</label>
-                    <input type="text" id="ced" value={Editar.ced} onChange={e=>setEditar({...Editar,[e.target.id]:e.target.value})} className="form-control" placeholder="Ingresar Cedula" />
+                    <input 
+                     type="text" 
+                     id="ced" 
+                     value={Editar.ced} 
+                     onChange={e=>setEditar({...Editar,[e.target.id]:e.target.value})} 
+                     className={`form-control ${CedValid ? 'is-invalid' : 'form-control'}`} 
+                     placeholder="Ingresar Cedula" />
+                     {CedValid && <p style={{color:"red"}}>{Ced}</p>}
+
                 </div>
                 <div className="form-group">
                     <label htmlFor="nombre">Nombre</label>
-                    <input type="text" className="form-control" value={Editar.nombre} onChange={e=>setEditar({...Editar,[e.target.id]:e.target.value})} id="nombre" placeholder="Ingresar Nombre" />
+                    <input 
+                     type="text"
+                     className={`form-control ${NombreInvalid ? 'is-invalid' : 'form-control'}`} 
+                     value={Editar.nombre} 
+                     onChange={e=>setEditar({...Editar,[e.target.id]:e.target.value})} 
+                     id="nombre"
+                     placeholder="Ingresar Nombre" />
+                     {NombreInvalid && <p style={{color:"red"}}>{Nombre}</p>}
                 </div>
                 <div className="form-group">
                     <label htmlFor="FechaN">Fecha de Nacimiento</label>
@@ -90,14 +135,33 @@ const Editar = () => {
                 </div>
                 <div className="form-group">
                     <label htmlFor="telf">Telefono</label>
-                    <input type="text" className="form-control" 
+                    <input 
+                    type="text"  
+                    className={`form-control ${TelfInvalid ? 'is-invalid' : 'form-control'}`} 
                     value={Editar.telf} 
                     onChange={e=>setEditar({...Editar,[e.target.id]:e.target.value})} 
                     id="telf" />
+                    {TelfInvalid && <p style={{color:"red"}}>{Telf}</p>}
                 </div>
                 </div>
                 <div className="card-footer">
-                <button type="submit" className="btn btn-primary">Actualizar</button>
+                {(Loading) ? <button 
+                          className="btn btn-primary" 
+                          type="button" 
+                          disabled>
+                         <span 
+                          className="spinner-grow spinner-grow-sm" 
+                          role="status" 
+                          aria-hidden="true" />
+                            Loading...
+                          </button>
+                        : 
+                        <button 
+                         type="submit" 
+                         className="btn btn-primary">
+                         Actualizar
+                         </button>
+                        }
                 <Link to="/" href="#" className="btn btn-default">Atras</Link>
 
                 </div>
