@@ -8,7 +8,8 @@ const Detalles2 = () => {
         "origen":"",
         "destino":"",
         "precio":"",
-        "disponible":0
+        "disponible":0,
+        "viajeros":[]
     });
     let {pathname} = useLocation();
     let inicio,ruta,params;
@@ -18,13 +19,14 @@ const Detalles2 = () => {
             let detalles = await fetch('/api/viaje/detallesViajes/'+params)
             let data = detalles.json();
 
-            data.then(({data}) => {
+            data.then(({data,clientes}) => {
                 setDetalles({
                     "cod":data[0]['codigo'],
                     "origen":data[0]['origen'],
                     "destino":data[0]['destino'],
                     "precio":data[0]['precio'],
-                    "disponible":data[0]['disponible']
+                    "disponible":data[0]['disponible'],
+                    "viajeros":clientes
                 })
             })
         }
@@ -63,20 +65,22 @@ const Detalles2 = () => {
             <div className="col-md-12">
                     <h5>Pasajeros a Bordo</h5>
                         <table  className="table table-hover ">
-                        <thead>
+                        <thead align="center">
                             <tr>
                             <th>Cedula</th>
                             <th>Nombre</th>
-                            <th>Numero de Plazas</th>
+                            <th>telf</th>
                             </tr>
                         </thead>
                         <tbody align="center">
+                            {Detalles.viajeros.map((elm) => 
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
+                                <td>{elm.cedula}</td>
+                                <td>{elm.name}</td>
+                                <td>{elm.telf}</td>
                                 
                             </tr>
+                            )}
                         </tbody>
                         </table>
                 </div>

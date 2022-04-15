@@ -8,6 +8,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Routing\Annotation\Route;
 use Doctrine\Persistence\ManagerRegistry;
 use App\Entity\Viajes;
+use App\Entity\Cliente;
+use App\Entity\PasajerosViajes;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
  /**
@@ -151,9 +153,24 @@ class ViajesController extends AbstractController
                 'precio' => $viajes->getPrecio(),
                 'disponible' => intval($viajes->getNumPlaza())
             ];
+        $viajess = $doctrine->getRepository(PasajerosViajes::class);
+        $viajes3 = $viajess->findBy(array('id_viaje' =>$viajes->getId()));
+        $clienteViajeR = [];
+        if(count($viajes3) > 0){
+            foreach ($viajes3 as $key) {
+                $cliente = $doctrine->getRepository(Cliente::class);
+                $clienteViaje = $cliente->find($key->getIdCliente());
+                $clienteViajeR[] = [
+                    'name' => $clienteViaje->getName(),
+                    'cedula' => $clienteViaje->getCedula(),
+                    'telf' => $clienteViaje->getTelf()
+                ];
+            }
+        }
         $response = new JsonResponse();
         $response->setData([
-            'data' => $viajesArray
+            'data' => $viajesArray,
+            'clientes' => $clienteViajeR
         ]);
         return $response;
     }
