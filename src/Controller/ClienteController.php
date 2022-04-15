@@ -225,9 +225,12 @@ class ClienteController extends AbstractController
         ValidatorInterface $validator)
     {
        $data = json_decode($request->getContent());
+       $em = $doctrine->getManager();
        $cliente1 = $doctrine->getRepository(Cliente::class);
        $clientes = $cliente1->find($data->id);
-       $em = $doctrine->getManager();
+       
+       
+
        list($day, $month, $year) = explode('/', $data->fechaN);
        $date = new \DateTime();
        $date->setDate($year, $month, $day);
@@ -235,7 +238,7 @@ class ClienteController extends AbstractController
        $clientes->setCedula($data->ced);
        $clientes->setTelf($data->telf);
        $clientes->setFechaNacimiento($date);
-
+       $em->persist($clientes);
        $error = $validator->validate($clientes);
        if(count($error) > 0){
            $errores =[];
@@ -251,17 +254,42 @@ class ClienteController extends AbstractController
            return new Response(json_encode($errores));
       }
 
-      $viajes = $doctrine->getRepository(Viajes::class);
+      //$viajes = $doctrine->getRepository(Viajes::class);
+      if(count($data->viajes) > 0){
       foreach ($data->viajes as $key) {
+        $viajesRla = $doctrine->getRepository(PasajerosViajes::class);
+        $viajesRla2 = $viajesRla->findOneBy(array('id_cliente' => $data->id,
+                                                  'id_viaje' => $key->id));  
+        if($viajesRla2 === null){
           $pasajeros = new PasajerosViajes();
           $pasajeros->setIdCliente($clientes->getId());
           $pasajeros->setIdViaje($key->id);
-          $em->persist($pasajeros);  
-          $em->flush();
+          $em->persist($pasajeros);   
+        }
+          
+         
       }
+    }
+    /*$entityManager = $doctrine->getManager();
+    $cliente1 = $doctrine->getRepository(Cliente::class);
+    $clientes = $cliente1->find($id);
+    
+    $entityManager->remove($clientes);
+    $entityManager->flush();*/
 
-
-        $em->persist($clientes);
+      if(count($data->elimiViajes) > 0){
+          foreach ($data->elimiViajes as $key) {
+              
+            $viajesRla = $doctrine->getRepository(PasajerosViajes::class);
+            $viajesRla2 = $viajesRla->findOneBy(array('id_cliente' => $data->id,
+                                                      'id_viaje' => $key->id));  
+            if($viajesRla2 !== null){
+                $em->remove($viajesRla2);
+            }
+          }
+      }
+        
+        
         $em->flush();
         return new Response(json_encode('Se Ha Actualizado El Cliente '));
         

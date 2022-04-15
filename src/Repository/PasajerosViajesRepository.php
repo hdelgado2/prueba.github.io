@@ -60,7 +60,17 @@ class PasajerosViajesRepository extends ServiceEntityRepository
             ->getResult()
         ;
     }
-    
+    public function findByTravel($val)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.id_viaje = :val')
+            ->setParameter('val', $val)
+            ->orderBy('p.id', 'ASC')
+            ->setMaxResults(10)
+            ->getQuery()
+            ->getResult()
+        ;
+    }
 
     /*
     public function findOneBySomeField($value): ?PasajerosViajes
