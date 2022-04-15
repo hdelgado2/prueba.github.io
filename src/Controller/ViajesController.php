@@ -115,6 +115,16 @@ class ViajesController extends AbstractController
         $entityManager = $doctrine->getManager();
         $viaje = $doctrine->getRepository(Viajes::class);
         $viajes = $viaje->find($id);
+        $viajess = $doctrine->getRepository(PasajerosViajes::class);
+        $viajes3 = $viajess->findBy(array('id_viaje' =>(int)$id));
+        if(count($viajes3) > 0) {
+            $response = new JsonResponse();
+            $response->setData([
+            'data' => "No se Puede ELiminar el Viaje ya que hay pasajeros"
+        ]);
+        return $response;    
+        }
+
         $entityManager->remove($viajes);
         $entityManager->flush();
         $viajeUpdate = $viaje->findAll();

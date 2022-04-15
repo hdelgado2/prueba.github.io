@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from 'react'
 import { Link } from "react-router-dom";
+import SweetAlert from 'sweetalert2-react';
 
 const ListaViajes = () => {
     const [Listado, setListado] = useState([]);
     const [Filtro, setFiltro] = useState("");
+    const [Sweet, setSweet] = useState(false)
+    const [Error, setError] = useState("")
     useEffect(() => {
         const fetchData = async() => {
             let data = await fetch('/api/viaje/lista');
@@ -30,12 +33,28 @@ const ListaViajes = () => {
         let deletedData = await fetch('/api/viaje/deleted/'+id)
         let listaUpdate = deletedData.json();
 
-        listaUpdate.then(({data}) => setListado(data))
+        listaUpdate.then(({data}) => {
+            if(data === "No se Puede ELiminar el Viaje ya que hay pasajeros"){
+                setSweet(true);
+                setError(data)
+            }else{
+                setListado(data)
+            }
+            
+        })
     }
 
     return (
         <>
          <div className="row">
+         <SweetAlert
+      show={Sweet}
+      title="Erro"
+      text={Error}
+      icon="success"
+      onConfirm={() => {
+          setSweet(false)
+        }}></SweetAlert>
         <div className="col-12">
             <div className="card">
             <div className="card-header">
