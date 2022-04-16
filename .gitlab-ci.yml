@@ -1,35 +1,10 @@
-pages:
-  image: php:7.2
-  script:
-    - apt-get install curl
-    - curl -LO https://raw.githubusercontent.com/bitnami/bitnami-docker-symfony/master/docker-compose.yml
-    - echo "Despliegue, sin operacion."
-    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-    - php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-    - php composer-setup.php 
-    - php composer.phar
-  path:
-    - prueba/
+test:
+    stage: test
     script:
-      - composer install
-  services:
-    - name: mysql:5.7
-      alias: mysql
-  variables:
-    MYSQL_DATABASE: prueba
-    MYSQL_ROOT_PASSWORD: 1234
-    MYSQL_USER: hdelgado
-    MYSQL_PASSWORD: 1234
-    DATABASE_URL: "mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4"
-  before_script:
-   # 
-  
-   #- php bin/console doctrine:database:create --env=env    
-   #- php bin/console doctrine:migration:migrate --env=env --no-interaction
-    
-  artifacts:
-    paths:
-    - public
-
-  only:
-  - main
+        - cp .env.test .env
+        # Install & enable Xdebug for code coverage reports
+        - pecl install xdebug
+        - docker-php-ext-enable xdebug
+        - php bin/console doctrine:migrations:migrate -e test
+        - php bin/console doctrine:fixture:load --no-interaction -e test
+        - php composer.phar test-gitlab
