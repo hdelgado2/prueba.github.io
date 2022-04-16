@@ -2,6 +2,7 @@ pages:
   image: php:7.2
   script:
     - echo "Despliegue, sin operacion."
+    - composer install
   # Si necesita, aqui se podra ejecutar comandos shell para instalar su
   # sitio web. En el caso de; website de CreaSoft.dev, instalamos eleventy. 
 
