@@ -1,15 +1,14 @@
 pages:
-  image: bitnami/bitnami-docker-symfony:5.4
-  # script:
-  #   - apt-get install curl
-  #   - curl -LO https://raw.githubusercontent.com/bitnami/bitnami-docker-symfony/master/docker-compose.yml
-  #   - echo "Despliegue, sin operacion."
-  #   - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-  #   - php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
-  #   - php composer-setup.php 
-  #   - php composer.phar
-  before-script:
-      - composer install
+  image: php:7.2
+  script:
+    - apt-get install curl
+    - curl -LO https://raw.githubusercontent.com/bitnami/bitnami-docker-symfony/master/docker-compose.yml
+    - echo "Despliegue, sin operacion."
+    - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+    - php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+    - php composer-setup.php 
+    - php composer.phar
+  
   services:
     - name: mysql:5.7
       alias: mysql
@@ -20,6 +19,9 @@ pages:
     MYSQL_PASSWORD: 1234
     DATABASE_URL: "mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4"
   before_script:
+    paths:
+       - ./
+       - composer install
    # 
   
    #- php bin/console doctrine:database:create --env=env    
