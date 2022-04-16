@@ -1,12 +1,22 @@
-image: php:7.2
-
-insight:
+phpunit:
+    image: php:7.2-apache
+    stage: UnitTests
+    services:
+        - name: mysql:5.7
+          alias: mysql
+    variables:
+      MYSQL_ROOT_PASSWORD: 1234
+      MYSQL_DATABASE: prueba
+      MYSQL_USER: hdelgado
+      MYSQL_PASSWORD: 1234
+      DATABASE_URL: 'mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4'
+    before_script:
+        - apt-get update && apt-get install -y git libzip-dev
+        - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
+        - docker-php-ext-install mysqli pdo pdo_mysql zip
+        - php bin/console doctrine:database:drop --force --env=test
+        - php bin/console doctrine:database:create --env=test
+        - php bin/console doctrine:migration:migrate --env=test --no-interaction
     script:
-        - curl -o insight.phar -s https://get.insight.symfony.com/insight.phar
-        - php insight.phar analyze --no-interaction --no-ansi \
-            <project-uuid> \
-            --reference=$CI_COMMIT_SHA \
-            --user-uuid=<your-user-uuid> \
-            --api-token=<your-api-token> \
-            --fail-condition="<fail-condition>"
-
+        - php bin/phpunit
+    allow_failure: false
