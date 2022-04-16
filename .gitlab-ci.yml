@@ -1,22 +1,43 @@
-phpunit:
-    image: php:7.2-apache
-    stage: UnitTests
-    services:
-        - name: mysql:5.7
-          alias: mysql
-    variables:
-      MYSQL_ROOT_PASSWORD: 1234
-      MYSQL_DATABASE: prueba
-      MYSQL_USER: hdelgado
-      MYSQL_PASSWORD: 1234
-      DATABASE_URL: 'mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4'
-    before_script:
-        - apt-get update && apt-get install -y git libzip-dev
-        - curl -sSk https://getcomposer.org/installer | php -- --disable-tls && mv composer.phar /usr/local/bin/composer
-        - docker-php-ext-install mysqli pdo pdo_mysql zip
-        - php bin/console doctrine:database:drop --force --env=test
-        - php bin/console doctrine:database:create --env=test
-        - php bin/console doctrine:migration:migrate --env=test --no-interaction
+image: jakzal/phpqa:php7.2
+
+before_scrip:
+    - composer install
+
+cache:
+    path:
+     - vendor/
+
+stages:
+    - SecurityChecker
+    - CodingStandards
+    - UnitTests
+
+security-checker:
+    stage: SecurityChecker
     script:
-        - php bin/phpunit
+         - security-checker security:check composer.lock
+    allow_failure: false
+
+phpcs:
+    stage: codingStandards
+    script:
+         - phpcs -v --standard=PSR12 --ignore=./src/kernel.php ./src
+    allow_failure: false
+
+phpstan:
+    stage: codingStandards
+    script:
+         - phpstan analyse ./src
+    allow_failure: false
+
+twig-lint:
+    stage: codingStandards
+    script:
+         - twig-lint lint ./templates
+    allow_failure: false
+
+phpunit:
+    stage: unitTests
+    script:
+         - php bin\phpunit
     allow_failure: false
