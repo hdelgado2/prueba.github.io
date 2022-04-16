@@ -1,43 +1,5 @@
-image: jakzal/phpqa:php7.2
+image: php7.2
 
 before_scrip:
     - composer install
 
-cache:
-    path:
-     - vendor/
-
-stages:
-    - SecurityChecker
-    - CodingStandards
-    - UnitTests
-
-security-checker:
-    stage: SecurityChecker
-    script:
-         - security-checker security:check composer.lock
-    allow_failure: false
-
-phpcs:
-    stage: codingStandards
-    script:
-         - phpcs -v --standard=PSR12 --ignore=./src/kernel.php ./src
-    allow_failure: false
-
-phpstan:
-    stage: codingStandards
-    script:
-         - phpstan analyse ./src
-    allow_failure: false
-
-twig-lint:
-    stage: codingStandards
-    script:
-         - twig-lint lint ./templates
-    allow_failure: false
-
-phpunit:
-    stage: unitTests
-    script:
-         - php bin\phpunit
-    allow_failure: false
