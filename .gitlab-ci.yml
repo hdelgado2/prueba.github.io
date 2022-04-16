@@ -1,7 +1,6 @@
 pages:
-  image: 
-    - php:7.2
-    - bitnami/symfony:5.4
+  image: php:7.2
+  image: bitnami/symfony:5.4
   services:
     - name: mysql:5.7
       alias: mysql
