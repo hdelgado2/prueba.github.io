@@ -10,7 +10,7 @@ pages:
     - php composer.phar
     - mv composer.phar /usr/local/bin/composer
     - pwd
-    - composer install --prefer-dist --ignore-platform-reqs
+    - composer install --prefer-dist --ignore-platform-req IGNORE-PLATFORM-REQ
   services:
     - name: mysql:5.7
       alias: mysql
