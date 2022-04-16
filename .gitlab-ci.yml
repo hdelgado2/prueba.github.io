@@ -1,5 +1,4 @@
 image: php7.2
 
-before_scrip:
+before_script:
     - composer install
-
