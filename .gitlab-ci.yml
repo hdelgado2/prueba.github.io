@@ -8,8 +8,7 @@ pages:
     - php -r "unlink('composer-setup.php');"
 
   phpunit:
-    image:  
-        - php:7.2-apache
+    image: php:7.2-apache
     
   artifacts:
     paths:
