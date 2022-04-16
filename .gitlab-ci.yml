@@ -9,6 +9,16 @@ pages:
   services:
     - name: mysql:5.7
       alias: mysql
+  variables:
+    MYSQL_DATABASE: prueba
+    MYSQL_ROOT_PASSWORD: 1234
+    MYSQL_USER: hdelgado
+    MYSQL_PASSWORD: 1234
+    DATABASE_URL: "mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4"
+  before_script:
+    - apt-get pdo pdo_mysqli zip
+    - php bin\console doctrine:database:create --env=env    
+    - php bin\console doctrine:migration:migrate --env=env --no-interaction
     
   artifacts:
     paths:
