@@ -10,6 +10,7 @@ pages:
     - php composer.phar
     - mv composer.phar /usr/local/bin/composer
     - pwd
+    - composer install
   services:
     - name: mysql:5.7
       alias: mysql
