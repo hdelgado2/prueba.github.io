@@ -2,6 +2,7 @@ pages:
   image: php:7.2
   script:
     - apt-get install curl
+    - apt-get install git
     - curl -LO https://raw.githubusercontent.com/bitnami/bitnami-docker-symfony/master/docker-compose.yml
     - echo "Despliegue, sin operacion."
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -9,6 +10,7 @@ pages:
     - php composer-setup.php 
     - php composer.phar
     - mv composer.phar /usr/local/bin/composer
+    - pwd
     - composer install
   services:
     - name: mysql:5.7
