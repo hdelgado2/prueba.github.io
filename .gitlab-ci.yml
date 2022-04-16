@@ -6,6 +6,7 @@ pages:
     - php -r "if (hash_file('sha384', 'composer-setup.php') === '906a84df04cea2aa72f40b5f787e49f22d4c2f19492ac310e8cba5b96ac8b64115ac402c8cd292b8a03482574915d1a8') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
     - php composer-setup.php 
     - php -r "unlink('composer-setup.php');"
+    - composer install
   services:
     - name: mysql:5.7
       alias: mysql
@@ -16,10 +17,10 @@ pages:
     MYSQL_PASSWORD: 1234
     DATABASE_URL: "mysql://hdelgado:1234@127.0.0.1:3306/prueba?serverVersion=5.7&charset=utf8mb4"
   before_script:
-   # - docker-php-ext-install apt-get pdo pdo_mysqli zip
-    - composer install
-    - php bin/console doctrine:database:create --env=env    
-    - php bin/console doctrine:migration:migrate --env=env --no-interaction
+   # 
+  
+   #- php bin/console doctrine:database:create --env=env    
+   #- php bin/console doctrine:migration:migrate --env=env --no-interaction
     
   artifacts:
     paths:
